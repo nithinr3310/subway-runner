@@ -28,6 +28,7 @@ this.obstacles = new ObstacleManager(this);
 this.coins = new CoinManager(this);
 this.coinCount = 0;
 this.setupStart();
+this.trackOffset = 0;
 document.getElementById("restartBtn")
 .addEventListener("click", () => this.restartGame());
 
@@ -78,6 +79,14 @@ if(!this.running) return;
 
 this.score += this.speed * 0.05;
 
+this.speed = 4 + Math.floor(this.score / 200);
+
+this.trackOffset += this.speed;
+
+if(this.trackOffset > 40){
+this.trackOffset = 0;
+}
+
 this.player.update();
 
 this.obstacles.update();
@@ -85,8 +94,6 @@ this.obstacles.update();
 this.coins.update();
 
 this.checkCollisions();
-
-this.speed = 4 + Math.floor(this.score / 200);
 
 document.getElementById("score").innerText =
 "Score: " + Math.floor(this.score);
@@ -101,6 +108,9 @@ draw(){
 this.ctx.clearRect(0,0,this.width,this.height);
 
 if(!this.running) return;
+
+this.drawTrack();
+
 
 this.player.draw(this.ctx);
 
@@ -126,6 +136,33 @@ document.getElementById("finalScore")
 }
 
 });
+
+}
+drawTrack(){
+
+const ctx = this.ctx;
+
+ctx.fillStyle = "#333";
+
+ctx.fillRect(0,0,this.width,this.height);
+
+
+ctx.strokeStyle = "#555";
+ctx.lineWidth = 4;
+
+for(let i=-20;i<20;i++){
+
+const y = i*40 + this.trackOffset;
+
+ctx.beginPath();
+
+ctx.moveTo(0,y);
+
+ctx.lineTo(this.width,y);
+
+ctx.stroke();
+
+}
 
 }
 }

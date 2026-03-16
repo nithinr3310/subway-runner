@@ -7,12 +7,24 @@ this.game = game;
 this.obstacles = [];
 
 this.spawnTimer = 0;
-
+this.patterns = [
+[1,0,1],
+[0,1,0],
+[1,0,0],
+[0,0,1],
+[1,1,0],
+[0,1,1]
+];
 }
 
 spawnObstacle(){
 
-const lane = Math.floor(Math.random() * 3);
+const pattern =
+this.patterns[Math.floor(Math.random()*this.patterns.length)];
+
+for(let lane=0; lane<3; lane++){
+
+if(pattern[lane] === 1){
 
 const obstacle = {
 
@@ -26,6 +38,10 @@ y:-50
 };
 
 this.obstacles.push(obstacle);
+
+}
+
+}
 
 }
 
@@ -56,7 +72,7 @@ obstacle => obstacle.y < this.game.height + 100
 
 draw(ctx){
 
-ctx.fillStyle = "red";
+ctx.fillStyle = "#ff0055";
 
 this.obstacles.forEach(obstacle =>{
 
