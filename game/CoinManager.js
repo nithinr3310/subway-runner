@@ -51,6 +51,15 @@ this.coins.forEach((coin,index)=>{
 
 coin.y += this.game.speed;
 
+if(this.game.magnetActive){
+
+const dx = this.game.player.x - coin.x;
+const dy = this.game.player.y - coin.y;
+
+coin.x += dx * 0.05;
+coin.y += dy * 0.05;
+
+}
 if(checkCollision(this.game.player,{
 x:coin.x,
 y:coin.y,

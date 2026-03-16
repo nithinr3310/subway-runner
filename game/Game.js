@@ -3,6 +3,7 @@ import checkCollision from "./Collision.js";
 import Player from "./Player.js";
 import InputHandler from "./InputHandler.js";
 import CoinManager from "./CoinManager.js";
+import PowerUpManager from "./PowerUpManager.js";
 
 export default class Game{
 
@@ -29,6 +30,11 @@ this.coins = new CoinManager(this);
 this.coinCount = 0;
 this.setupStart();
 this.trackOffset = 0;
+this.powerUps = new PowerUpManager(this);
+
+this.magnetActive = false;
+
+this.magnetTimer = 0;
 document.getElementById("restartBtn")
 .addEventListener("click", () => this.restartGame());
 
@@ -94,6 +100,18 @@ this.obstacles.update();
 this.coins.update();
 
 this.checkCollisions();
+this.powerUps.update();
+if(this.magnetActive){
+
+this.magnetTimer--;
+
+if(this.magnetTimer <= 0){
+
+this.magnetActive = false;
+
+}
+
+}
 
 document.getElementById("score").innerText =
 "Score: " + Math.floor(this.score);
@@ -117,6 +135,7 @@ this.player.draw(this.ctx);
 this.obstacles.draw(this.ctx);
 
 this.coins.draw(this.ctx);
+this.powerUps.draw(this.ctx);
 
 }
 checkCollisions(){
