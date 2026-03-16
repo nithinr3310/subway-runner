@@ -2,6 +2,7 @@ import ObstacleManager from "./ObstacleManager.js";
 import checkCollision from "./Collision.js";
 import Player from "./Player.js";
 import InputHandler from "./InputHandler.js";
+import CoinManager from "./CoinManager.js";
 
 export default class Game{
 
@@ -24,6 +25,8 @@ this.player = new Player(this);
 new InputHandler(this);
 
 this.obstacles = new ObstacleManager(this);
+this.coins = new CoinManager(this);
+this.coinCount = 0;
 this.setupStart();
 
 }
@@ -54,16 +57,23 @@ update(deltaTime){
 
 if(!this.running) return;
 
-this.score += 0.1;
+this.score += this.speed * 0.05;
 
 this.player.update();
 
 this.obstacles.update();
 
+this.coins.update();
+
 this.checkCollisions();
+
+this.speed = 4 + Math.floor(this.score / 200);
 
 document.getElementById("score").innerText =
 "Score: " + Math.floor(this.score);
+
+document.getElementById("coins").innerText =
+"Coins: " + this.coinCount;
 
 }
 
@@ -76,6 +86,8 @@ if(!this.running) return;
 this.player.draw(this.ctx);
 
 this.obstacles.draw(this.ctx);
+
+this.coins.draw(this.ctx);
 
 }
 checkCollisions(){
