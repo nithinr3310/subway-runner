@@ -1,3 +1,5 @@
+import ObstacleManager from "./ObstacleManager.js";
+import checkCollision from "./Collision.js";
 import Player from "./Player.js";
 import InputHandler from "./InputHandler.js";
 
@@ -21,6 +23,7 @@ this.speed = 4;
 this.player = new Player(this);
 new InputHandler(this);
 
+this.obstacles = new ObstacleManager(this);
 this.setupStart();
 
 }
@@ -55,6 +58,10 @@ this.score += 0.1;
 
 this.player.update();
 
+this.obstacles.update();
+
+this.checkCollisions();
+
 document.getElementById("score").innerText =
 "Score: " + Math.floor(this.score);
 
@@ -68,6 +75,26 @@ if(!this.running) return;
 
 this.player.draw(this.ctx);
 
+this.obstacles.draw(this.ctx);
+
+}
+checkCollisions(){
+
+this.obstacles.obstacles.forEach(obstacle => {
+
+if(checkCollision(this.player, obstacle)){
+
+this.running = false;
+
+document.getElementById("gameOverScreen")
+.classList.remove("hidden");
+
+document.getElementById("finalScore")
+.innerText = "Score: " + Math.floor(this.score);
+
 }
 
+});
+
+}
 }
