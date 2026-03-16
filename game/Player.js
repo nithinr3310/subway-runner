@@ -99,20 +99,19 @@ this.isJumping = false;
 
 draw(ctx){
 
-ctx.fillStyle = "cyan";
+ctx.fillStyle = "#00ffff";
+
+ctx.shadowColor = "#00ffff";
+ctx.shadowBlur = 20;
 
 ctx.fillRect(
-
 this.x - this.width/2,
-
 this.y - this.height,
-
 this.width,
-
 this.height
-
-
 );
+
+ctx.shadowBlur = 0;
 
 }
 

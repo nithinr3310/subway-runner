@@ -72,8 +72,9 @@ obstacle => obstacle.y < this.game.height + 100
 
 draw(ctx){
 
-ctx.fillStyle = "#ff0055";
-
+ctx.fillStyle = "#ff0066";
+ctx.shadowColor = "#ff0066";
+ctx.shadowBlur = 15;
 this.obstacles.forEach(obstacle =>{
 
 ctx.fillRect(

@@ -142,22 +142,39 @@ drawTrack(){
 
 const ctx = this.ctx;
 
-ctx.fillStyle = "#333";
-
+ctx.fillStyle = "#0b0f1a";
 ctx.fillRect(0,0,this.width,this.height);
 
 
-ctx.strokeStyle = "#555";
-ctx.lineWidth = 4;
+// neon lane lines
+ctx.strokeStyle = "#00ffff";
+ctx.lineWidth = 3;
 
-for(let i=-20;i<20;i++){
+const lanePositions = this.player.lanes;
 
-const y = i*40 + this.trackOffset;
+lanePositions.forEach(x => {
+
+ctx.beginPath();
+
+ctx.moveTo(x,0);
+ctx.lineTo(x,this.height);
+
+ctx.stroke();
+
+});
+
+
+// moving ground segments
+ctx.strokeStyle = "#222";
+ctx.lineWidth = 2;
+
+for(let i=0;i<20;i++){
+
+const y = i*60 + this.trackOffset;
 
 ctx.beginPath();
 
 ctx.moveTo(0,y);
-
 ctx.lineTo(this.width,y);
 
 ctx.stroke();

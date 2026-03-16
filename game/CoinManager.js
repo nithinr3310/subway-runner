@@ -9,20 +9,23 @@ this.game = game;
 this.coins = [];
 
 this.spawnTimer = 0;
+this.trailLength = 6;
 
 }
 
-spawnCoin(){
+spawnCoinTrail(){
 
-const lane = Math.floor(Math.random() * 3);
+const lane = Math.floor(Math.random()*3);
+
+for(let i=0;i<this.trailLength;i++){
 
 const coin = {
 
-x: this.game.player.lanes[lane],
+x:this.game.player.lanes[lane],
 
-y: -20,
+y: -i * 60,
 
-radius: 10
+radius:10
 
 };
 
@@ -30,13 +33,15 @@ this.coins.push(coin);
 
 }
 
+}
+
 update(){
 
 this.spawnTimer++;
 
-if(this.spawnTimer > 90){
+if(this.spawnTimer > 150){
 
-this.spawnCoin();
+this.spawnCoinTrail();
 
 this.spawnTimer = 0;
 
@@ -69,6 +74,9 @@ coin => coin.y < this.game.height + 50
 draw(ctx){
 
 ctx.fillStyle="yellow";
+
+ctx.shadowColor = "yellow";
+ctx.shadowBlur = 15;
 
 this.coins.forEach(coin=>{
 
