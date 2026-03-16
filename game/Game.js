@@ -28,9 +28,28 @@ this.obstacles = new ObstacleManager(this);
 this.coins = new CoinManager(this);
 this.coinCount = 0;
 this.setupStart();
+document.getElementById("restartBtn")
+.addEventListener("click", () => this.restartGame());
 
 }
+restartGame(){
 
+this.score = 0;
+
+this.coinCount = 0;
+
+this.speed = 4;
+
+this.obstacles.obstacles = [];
+
+this.coins.coins = [];
+
+this.running = true;
+
+document.getElementById("gameOverScreen")
+.classList.add("hidden");
+
+}
 setupStart(){
 
 window.addEventListener("keydown",(e)=>{

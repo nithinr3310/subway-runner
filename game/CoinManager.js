@@ -58,6 +58,9 @@ this.game.coinCount++;
 this.coins.splice(index,1);
 
 }
+this.coins = this.coins.filter(
+coin => coin.y < this.game.height + 50
+);
 
 });
 

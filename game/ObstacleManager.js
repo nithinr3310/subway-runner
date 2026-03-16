@@ -45,6 +45,11 @@ this.obstacles.forEach(obstacle =>{
 
 obstacle.y += this.game.speed;
 
+// remove obstacles that leave screen
+this.obstacles = this.obstacles.filter(
+obstacle => obstacle.y < this.game.height + 100
+);
+
 });
 
 }

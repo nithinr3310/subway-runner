@@ -23,6 +23,10 @@ this.isJumping = false;
 
 this.isSliding = false;
 
+this.targetX = this.x;
+
+this.laneSpeed = 10;
+
 }
 
 moveLeft(){
@@ -31,7 +35,7 @@ if(this.currentLane > 0){
 
 this.currentLane--;
 
-this.x = this.lanes[this.currentLane];
+this.targetX = this.lanes[this.currentLane];
 
 }
 
@@ -43,7 +47,7 @@ if(this.currentLane < 2){
 
 this.currentLane++;
 
-this.x = this.lanes[this.currentLane];
+this.targetX = this.lanes[this.currentLane];
 
 }
 
@@ -75,6 +79,8 @@ this.isSliding = false;
 
 update(){
 
+    // smooth lane movement
+this.x += (this.targetX - this.x) * 0.2;
 this.y += this.velocityY;
 
 this.velocityY += this.gravity;
@@ -104,6 +110,7 @@ this.y - this.height,
 this.width,
 
 this.height
+
 
 );
 

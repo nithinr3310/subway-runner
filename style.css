@@ -30,3 +30,6 @@ text-align:center;
 .hidden{
 display:none;
 }
+#ui span{
+margin-right:20px;
+}
