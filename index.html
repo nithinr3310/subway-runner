@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="UTF-8">
+<title>Subway Runner</title>
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<!-- START SCREEN -->
+<div id="startScreen">
+<h1>Subway Runner</h1>
+<p>Press SPACE to start</p>
+</div>
+
+<!-- GAME OVER SCREEN -->
+<div id="gameOverScreen" class="hidden">
+<h1>Game Over</h1>
+<p id="finalScore"></p>
+<button id="restartBtn">Restart</button>
+</div>
+
+<!-- UI -->
+<div id="ui">
+<span id="score">Score: 0</span>
+<span id="coins">Coins: 0</span>
+</div>
+
+<!-- GAME CANVAS -->
+<canvas id="gameCanvas"></canvas>
+
+<script type="module" src="main.js"></script>
+
+</body>
+</html>
