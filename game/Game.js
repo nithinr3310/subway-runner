@@ -1,3 +1,6 @@
+import Player from "./Player.js";
+import InputHandler from "./InputHandler.js";
+
 export default class Game{
 
 constructor(canvas,ctx){
@@ -14,6 +17,9 @@ this.score = 0;
 this.coins = 0;
 
 this.speed = 4;
+
+this.player = new Player(this);
+new InputHandler(this);
 
 this.setupStart();
 
@@ -47,6 +53,8 @@ if(!this.running) return;
 
 this.score += 0.1;
 
+this.player.update();
+
 document.getElementById("score").innerText =
 "Score: " + Math.floor(this.score);
 
@@ -58,9 +66,7 @@ this.ctx.clearRect(0,0,this.width,this.height);
 
 if(!this.running) return;
 
-this.ctx.fillStyle="white";
-
-this.ctx.fillText("Game Running...",400,250);
+this.player.draw(this.ctx);
 
 }
 
