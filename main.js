@@ -1,25 +1,21 @@
-import Game from "./game/Game.js";
+import Game         from './game/Game.js';
+import SceneManager  from './graphics/SceneManager.js';
 
-const canvas = document.getElementById("gameCanvas");
-const ctx = canvas.getContext("2d");
+// ── Boot ─────────────────────────────────────────────────────────────────────
+const sceneManager = new SceneManager();
+const game         = new Game(sceneManager);
 
-canvas.width = 900;
-canvas.height = 500;
-
-const game = new Game(canvas, ctx);
-
+// ── Game Loop ─────────────────────────────────────────────────────────────────
 let lastTime = 0;
 
-function gameLoop(timeStamp){
+function gameLoop(timestamp) {
+  const deltaTime = Math.min(timestamp - lastTime, 50); // cap at 50ms to avoid spiral of death
+  lastTime = timestamp;
 
-const deltaTime = timeStamp - lastTime;
-lastTime = timeStamp;
+  game.update(deltaTime);
+  sceneManager.render(deltaTime);
 
-game.update(deltaTime);
-game.draw();
-
-requestAnimationFrame(gameLoop);
-
+  requestAnimationFrame(gameLoop);
 }
 
 requestAnimationFrame(gameLoop);

@@ -1,118 +1,83 @@
-export default class Player{
+/**
+ * Player — pure game logic, no drawing.
+ *
+ * Coordinate space:
+ *   X   = world X: lanes at -2, 0, +2
+ *   y   = 3D Y: ground=0, jump peak ≈ 3.0
+ *
+ * PlayerMesh.js reads .x, .y, .isSliding, .isJumping each frame.
+ */
+export default class Player {
 
-constructor(game){
+  constructor(game) {
+    this.game = game;
 
-this.game = game;
+    // Collision box dimensions (world units)
+    this.width  = 0.7;
+    this.height = 1.4;
 
-this.width = 50;
-this.height = 80;
+    // 3D lane positions
+    this.lanes       = [-2, 0, 2];
+    this.currentLane = 1;
 
-this.lanes = [300,450,600];
+    this.x       = this.lanes[this.currentLane];
+    this.targetX = this.x;
+    this.y       = 0; // ground level
 
-this.currentLane = 1;
+    this.velocityY = 0;
+    this.gravity   = 0.008;
 
-this.x = this.lanes[this.currentLane];
+    this.isJumping  = false;
+    this.isSliding  = false;
 
-this.y = 400;
+    this.laneSpeed = 0.18; // lerp factor for smooth lane change
+  }
 
-this.velocityY = 0;
+  moveLeft() {
+    if (!this.game.running) return;
+    if (this.currentLane > 0) {
+      this.currentLane--;
+      this.targetX = this.lanes[this.currentLane];
+    }
+  }
 
-this.gravity = 0.6;
+  moveRight() {
+    if (!this.game.running) return;
+    if (this.currentLane < 2) {
+      this.currentLane++;
+      this.targetX = this.lanes[this.currentLane];
+    }
+  }
 
-this.isJumping = false;
+  jump() {
+    if (!this.game.running) return;
+    if (!this.isJumping) {
+      this.velocityY = 0.185;
+      this.isJumping = true;
+    }
+  }
 
-this.isSliding = false;
+  slide() {
+    if (!this.game.running) return;
+    if (!this.isSliding) {
+      this.isSliding = true;
+      setTimeout(() => { this.isSliding = false; }, 600);
+    }
+  }
 
-this.targetX = this.x;
+  update() {
+    // Smooth lane movement
+    this.x += (this.targetX - this.x) * this.laneSpeed;
 
-this.laneSpeed = 10;
+    // Vertical physics
+    this.y         += this.velocityY;
+    this.velocityY -= this.gravity;
 
-}
-
-moveLeft(){
-
-if(this.currentLane > 0){
-
-this.currentLane--;
-
-this.targetX = this.lanes[this.currentLane];
-
-}
-
-}
-
-moveRight(){
-
-if(this.currentLane < 2){
-
-this.currentLane++;
-
-this.targetX = this.lanes[this.currentLane];
-
-}
-
-}
-
-jump(){
-
-if(!this.isJumping){
-
-this.velocityY = -12;
-
-this.isJumping = true;
-
-}
-
-}
-
-slide(){
-
-this.isSliding = true;
-
-setTimeout(()=>{
-
-this.isSliding = false;
-
-},600);
-
-}
-
-update(){
-
-    // smooth lane movement
-this.x += (this.targetX - this.x) * 0.2;
-this.y += this.velocityY;
-
-this.velocityY += this.gravity;
-
-if(this.y >= 400){
-
-this.y = 400;
-
-this.velocityY = 0;
-
-this.isJumping = false;
-
-}
-
-}
-
-draw(ctx){
-
-ctx.fillStyle = "#00ffff";
-
-ctx.shadowColor = "#00ffff";
-ctx.shadowBlur = 20;
-
-ctx.fillRect(
-this.x - this.width/2,
-this.y - this.height,
-this.width,
-this.height
-);
-
-ctx.shadowBlur = 0;
-
-}
+    if (this.y <= 0) {
+      this.y         = 0;
+      this.velocityY = 0;
+      this.isJumping = false;
+    }
+  }
 
 }

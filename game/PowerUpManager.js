@@ -1,90 +1,54 @@
-import checkCollision from "./Collision.js";
+/**
+ * PowerUpManager — pure game logic in 3D world units.
+ *
+ * Each power-up:
+ *   { id, laneIndex (0/1/2), z (world Z), type }
+ *
+ * Current types: 'magnet'
+ */
+let _nextId = 5000;
 
-export default class PowerUpManager{
+export default class PowerUpManager {
 
-constructor(game){
+  constructor(game) {
+    this.game       = game;
+    this.powerUps   = [];
+    this.spawnTimer = 0;
+  }
 
-this.game = game;
+  spawnMagnet() {
+    const lane = Math.floor(Math.random() * 3);
+    this.powerUps.push({
+      id:        _nextId++,
+      laneIndex: lane,
+      z:         -52,
+      type:      'magnet',
+      size:      0.45,
+    });
+  }
 
-this.powerUps = [];
+  update() {
+    this.spawnTimer++;
 
-this.spawnTimer = 0;
+    if (this.spawnTimer > 550) {
+      this.spawnMagnet();
+      this.spawnTimer = 0;
+    }
 
-}
+    const speed = this.game.speed * 0.1;
 
-spawnMagnet(){
+    for (const pu of this.powerUps) {
+      pu.z += speed;
+    }
 
-const lane = Math.floor(Math.random()*3);
+    this.powerUps = this.powerUps.filter(pu => pu.z < 6);
+  }
 
-const magnet = {
-
-x:this.game.player.lanes[lane],
-
-y:-40,
-
-size:25,
-
-type:"magnet"
-
-};
-
-this.powerUps.push(magnet);
-
-}
-
-update(){
-
-this.spawnTimer++;
-
-if(this.spawnTimer > 600){
-
-this.spawnMagnet();
-
-this.spawnTimer = 0;
-
-}
-
-this.powerUps.forEach((power,index)=>{
-
-power.y += this.game.speed;
-
-if(checkCollision(this.game.player,{
-x:power.x,
-y:power.y,
-width:power.size,
-height:power.size
-})){
-
-if(power.type === "magnet"){
-
-this.game.magnetActive = true;
-
-this.game.magnetTimer = 300;
-
-}
-
-this.powerUps.splice(index,1);
-
-}
-
-});
-
-}
-
-draw(ctx){
-
-ctx.fillStyle = "#00ff88";
-
-this.powerUps.forEach(power=>{
-
-ctx.beginPath();
-
-ctx.arc(power.x,power.y,power.size,0,Math.PI*2);
-
-ctx.fill();
-
-});
-
-}
+  /**
+   * Called by Game.js when a power-up is collected.
+   */
+  removePowerUp(id) {
+    this.powerUps = this.powerUps.filter(pu => pu.id !== id);
+  }
 
 }

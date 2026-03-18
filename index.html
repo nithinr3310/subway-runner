@@ -2,36 +2,85 @@
 <html lang="en">
 
 <head>
-<meta charset="UTF-8">
-<title>Subway Runner</title>
-<link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Cyber Runner - A futuristic neon endless runner game built with Three.js">
+  <title>Cyber Runner</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-<!-- START SCREEN -->
-<div id="startScreen">
-<h1>Subway Runner</h1>
-<p>Press SPACE to start</p>
-</div>
+  <div id="gameContainer">
 
-<!-- GAME OVER SCREEN -->
-<div id="gameOverScreen" class="hidden">
-<h1>Game Over</h1>
-<p id="finalScore"></p>
-<button id="restartBtn">Restart</button>
-</div>
+    <!-- Three.js canvas is appended here by SceneManager -->
 
-<!-- UI -->
-<div id="ui">
-<span id="score">Score: 0</span>
-<span id="coins">Coins: 0</span>
-</div>
+    <!-- HUD -->
+    <div id="ui">
+      <div class="hud-item">
+        <span class="hud-label">SCORE</span>
+        <span id="score" class="hud-value">0</span>
+      </div>
+      <div class="hud-item">
+        <span class="hud-label">COINS</span>
+        <span id="coins" class="hud-value">0</span>
+      </div>
+      <div id="speedIndicator" class="hud-item">
+        <span class="hud-label">SPEED</span>
+        <span id="speedValue" class="hud-value">1</span>
+      </div>
+    </div>
 
-<!-- GAME CANVAS -->
-<canvas id="gameCanvas"></canvas>
+    <!-- Magnet indicator -->
+    <div id="magnetIndicator" class="hidden">
+      <span>⚡ MAGNET ACTIVE</span>
+    </div>
 
-<script type="module" src="main.js"></script>
+    <!-- START SCREEN -->
+    <div id="startScreen">
+      <div class="screen-content">
+        <div class="logo-container">
+          <h1 class="game-title">CYBER<br><span class="title-highlight">RUNNER</span></h1>
+          <div class="title-underline"></div>
+        </div>
+        <p class="subtitle">NAVIGATE THE NEON GRID</p>
+        <div class="controls-hint">
+          <div class="control-row"><kbd>←</kbd><kbd>→</kbd> <span>Switch Lanes</span></div>
+          <div class="control-row"><kbd>↑</kbd> <span>Jump</span></div>
+          <div class="control-row"><kbd>↓</kbd> <span>Slide</span></div>
+        </div>
+        <button id="startBtn" class="neon-btn pulse-btn">PRESS SPACE / TAP TO START</button>
+      </div>
+    </div>
+
+    <!-- GAME OVER SCREEN -->
+    <div id="gameOverScreen" class="hidden">
+      <div class="screen-content">
+        <h2 class="gameover-title">SYSTEM<br><span class="title-highlight">FAILURE</span></h2>
+        <div class="result-box">
+          <div class="result-row">
+            <span class="result-label">SCORE</span>
+            <span id="finalScore" class="result-value">0</span>
+          </div>
+          <div class="result-row">
+            <span class="result-label">COINS</span>
+            <span id="finalCoins" class="result-value">0</span>
+          </div>
+          <div class="result-row">
+            <span class="result-label">BEST</span>
+            <span id="bestScore" class="result-value">0</span>
+          </div>
+        </div>
+        <button id="restartBtn" class="neon-btn">REBOOT SYSTEM</button>
+      </div>
+    </div>
+
+  </div>
+
+  <script type="module" src="./main.js"></script>
 
 </body>
 </html>

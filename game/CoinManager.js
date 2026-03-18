@@ -1,102 +1,78 @@
-import checkCollision from "./Collision.js";
+/**
+ * CoinManager — pure game logic in 3D world units.
+ *
+ * Each coin:
+ *   { id, laneIndex (0/1/2), z (world Z) }
+ *
+ * Coins spawn as trails at z = -52 and move toward +Z.
+ * Removed when collected or when z > 6.
+ */
+let _nextId = 1000;
 
 export default class CoinManager {
 
-constructor(game){
+  constructor(game) {
+    this.game        = game;
+    this.coins       = [];
+    this.spawnTimer  = 0;
+    this.trailLength = 6;
+    this.trailGap    = 1.8; // world units between coins in a trail
+  }
 
-this.game = game;
+  spawnCoinTrail() {
+    const lane = Math.floor(Math.random() * 3);
 
-this.coins = [];
+    for (let i = 0; i < this.trailLength; i++) {
+      this.coins.push({
+        id:        _nextId++,
+        laneIndex: lane,
+        z:         -52 - i * this.trailGap,
+      });
+    }
+  }
 
-this.spawnTimer = 0;
-this.trailLength = 6;
+  update() {
+    this.spawnTimer++;
 
-}
+    if (this.spawnTimer > 140) {
+      this.spawnCoinTrail();
+      this.spawnTimer = 0;
+    }
 
-spawnCoinTrail(){
+    const speed = this.game.speed * 0.1;
 
-const lane = Math.floor(Math.random()*3);
+    for (const coin of this.coins) {
+      coin.z += speed;
 
-for(let i=0;i<this.trailLength;i++){
+      // Magnet effect: pull coin toward player's lane and Z
+      if (this.game.magnetActive) {
+        const playerLaneX = this.game.player.lanes[this.game.player.currentLane];
+        const coinLaneX   = [-2, 0, 2][coin.laneIndex];
+        const dx = playerLaneX - coinLaneX;
+        const dz = this.game.player.z - coin.z; // player is at ~z=2
 
-const coin = {
+        coin.z += dz * 0.04;
 
-x:this.game.player.lanes[lane],
+        // Shift laneIndex if pulled far enough
+        if (Math.abs(dx) > 0.5) {
+          const targetLane = this.game.player.currentLane;
+          if (coin.laneIndex !== targetLane) {
+            coin.laneIndex += dx > 0 ? 1 : -1;
+            coin.laneIndex  = Math.max(0, Math.min(2, coin.laneIndex));
+          }
+        }
+      }
+    }
 
-y: -i * 60,
+    // Remove coins past the camera
+    this.coins = this.coins.filter(c => c.z < 6);
+  }
 
-radius:10
-
-};
-
-this.coins.push(coin);
-
-}
-
-}
-
-update(){
-
-this.spawnTimer++;
-
-if(this.spawnTimer > 150){
-
-this.spawnCoinTrail();
-
-this.spawnTimer = 0;
-
-}
-
-this.coins.forEach((coin,index)=>{
-
-coin.y += this.game.speed;
-
-if(this.game.magnetActive){
-
-const dx = this.game.player.x - coin.x;
-const dy = this.game.player.y - coin.y;
-
-coin.x += dx * 0.05;
-coin.y += dy * 0.05;
-
-}
-if(checkCollision(this.game.player,{
-x:coin.x,
-y:coin.y,
-width:coin.radius*2,
-height:coin.radius*2
-})){
-
-this.game.coinCount++;
-
-this.coins.splice(index,1);
-
-}
-this.coins = this.coins.filter(
-coin => coin.y < this.game.height + 50
-);
-
-});
-
-}
-
-draw(ctx){
-
-ctx.fillStyle="yellow";
-
-ctx.shadowColor = "yellow";
-ctx.shadowBlur = 15;
-
-this.coins.forEach(coin=>{
-
-ctx.beginPath();
-
-ctx.arc(coin.x,coin.y,coin.radius,0,Math.PI*2);
-
-ctx.fill();
-
-});
-
-}
+  /**
+   * Called by Game.js when a coin is collected — removes it by id.
+   */
+  removeCoin(id) {
+    this.coins = this.coins.filter(c => c.id !== id);
+  }
 
 }
