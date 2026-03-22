@@ -1,7 +1,7 @@
 import * as THREE from 'three';
+import { LANE_X } from '../game/WorldConfig.js';
 
 const POOL_SIZE = 30;
-const LANE_X    = [-2, 0, 2];
 
 export default class CoinMesh {
 

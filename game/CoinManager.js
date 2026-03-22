@@ -3,10 +3,9 @@
  *
  * Each coin:
  *   { id, laneIndex (0/1/2), z (world Z) }
- *
- * Coins spawn as trails at z = -52 and move toward +Z.
- * Removed when collected or when z > 6.
  */
+import { DESPAWN_Z, LANE_X, PICKUP_SPAWN_Z, SCROLL_FACTOR } from './WorldConfig.js';
+
 let _nextId = 1000;
 
 export default class CoinManager {
@@ -26,7 +25,7 @@ export default class CoinManager {
       this.coins.push({
         id:        _nextId++,
         laneIndex: lane,
-        z:         -52 - i * this.trailGap,
+        z:         PICKUP_SPAWN_Z - i * this.trailGap,
       });
     }
   }
@@ -39,7 +38,7 @@ export default class CoinManager {
       this.spawnTimer = 0;
     }
 
-    const speed = this.game.speed * 0.1;
+    const speed = this.game.speed * SCROLL_FACTOR;
 
     for (const coin of this.coins) {
       coin.z += speed;
@@ -47,7 +46,7 @@ export default class CoinManager {
       // Magnet effect: pull coin toward player's lane and Z
       if (this.game.magnetActive) {
         const playerLaneX = this.game.player.lanes[this.game.player.currentLane];
-        const coinLaneX   = [-2, 0, 2][coin.laneIndex];
+        const coinLaneX   = LANE_X[coin.laneIndex];
         const dx = playerLaneX - coinLaneX;
         const dz = this.game.player.z - coin.z; // player is at ~z=2
 
@@ -65,7 +64,7 @@ export default class CoinManager {
     }
 
     // Remove coins past the camera
-    this.coins = this.coins.filter(c => c.z < 6);
+    this.coins = this.coins.filter(c => c.z < DESPAWN_Z);
   }
 
   /**

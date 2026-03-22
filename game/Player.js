@@ -1,3 +1,5 @@
+import { LANE_X, PLAYER_Z } from './WorldConfig.js';
+
 /**
  * Player — pure game logic, no drawing.
  *
@@ -7,6 +9,7 @@
  *
  * PlayerMesh.js reads .x, .y, .isSliding, .isJumping each frame.
  */
+
 export default class Player {
 
   constructor(game) {
@@ -17,7 +20,8 @@ export default class Player {
     this.height = 1.4;
 
     // 3D lane positions
-    this.lanes       = [-2, 0, 2];
+    this.lanes       = LANE_X;
+    this.z           = PLAYER_Z;
     this.currentLane = 1;
 
     this.x       = this.lanes[this.currentLane];

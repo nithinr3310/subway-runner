@@ -84,6 +84,40 @@ export default class ParticleSystem {
     });
   }
 
+  /** Blue-white radial burst when shield absorbs a hit */
+  emitShieldBurst(x, y, z) {
+    const count = 50;
+    for (let i = 0; i < count; i++) {
+      const ang = (i / count) * Math.PI * 2;
+      const spd = 0.15 + Math.random() * 0.18;
+      this._particles.push({
+        x, y: y + 0.9, z,
+        vx: Math.cos(ang) * spd,
+        vy: (Math.random() - 0.3) * 0.14,
+        vz: Math.sin(ang) * spd,
+        life: 1.0,
+        decay: 0.022 + Math.random() * 0.018,
+        r: 0.2, g: 0.6, b: 1.0,
+      });
+    }
+  }
+
+  /** Sparse golden trail during dash boost */
+  emitDashTrail(x, y, z) {
+    if (Math.random() > 0.35) return; // sparse
+    this._particles.push({
+      x: x + (Math.random() - 0.5) * 0.4,
+      y: y + 0.6 + Math.random() * 0.6,
+      z: z + 0.3 + Math.random() * 0.5,
+      vx: (Math.random() - 0.5) * 0.04,
+      vy: 0.03 + Math.random() * 0.04,
+      vz: 0.06 + Math.random() * 0.06,   // streams backward
+      life: 1.0,
+      decay: 0.06 + Math.random() * 0.04,
+      r: 1.0, g: 0.75, b: 0.0,
+    });
+  }
+
   // ── Update ────────────────────────────────────────────────────────────────
 
   update() {

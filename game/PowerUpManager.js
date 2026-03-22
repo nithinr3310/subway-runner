@@ -1,12 +1,14 @@
 /**
  * PowerUpManager — pure game logic in 3D world units.
  *
- * Each power-up:
- *   { id, laneIndex (0/1/2), z (world Z), type }
- *
- * Current types: 'magnet'
+ * Power-up types: 'magnet' | 'shield' | 'dash'
  */
+import { DESPAWN_Z, PICKUP_SPAWN_Z, SCROLL_FACTOR } from './WorldConfig.js';
+
 let _nextId = 5000;
+
+// Spawn weights: (magnet: 35%, shield: 35%, dash: 30%)
+const TYPES = ['magnet', 'magnet', 'shield', 'shield', 'dash', 'dash'];
 
 export default class PowerUpManager {
 
@@ -16,13 +18,13 @@ export default class PowerUpManager {
     this.spawnTimer = 0;
   }
 
-  spawnMagnet() {
+  _spawn(type) {
     const lane = Math.floor(Math.random() * 3);
     this.powerUps.push({
       id:        _nextId++,
       laneIndex: lane,
-      z:         -52,
-      type:      'magnet',
+      z:         PICKUP_SPAWN_Z,
+      type,
       size:      0.45,
     });
   }
@@ -30,23 +32,22 @@ export default class PowerUpManager {
   update() {
     this.spawnTimer++;
 
-    if (this.spawnTimer > 550) {
-      this.spawnMagnet();
+    // Spawn one every ~480 frames (≈ 8 seconds at 60fps)
+    if (this.spawnTimer > 480) {
+      const type = TYPES[Math.floor(Math.random() * TYPES.length)];
+      this._spawn(type);
       this.spawnTimer = 0;
     }
 
-    const speed = this.game.speed * 0.1;
+    const speed = this.game.speed * SCROLL_FACTOR;
 
     for (const pu of this.powerUps) {
       pu.z += speed;
     }
 
-    this.powerUps = this.powerUps.filter(pu => pu.z < 6);
+    this.powerUps = this.powerUps.filter(pu => pu.z < DESPAWN_Z);
   }
 
-  /**
-   * Called by Game.js when a power-up is collected.
-   */
   removePowerUp(id) {
     this.powerUps = this.powerUps.filter(pu => pu.id !== id);
   }

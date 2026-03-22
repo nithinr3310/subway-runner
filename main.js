@@ -1,21 +1,33 @@
-import Game         from './game/Game.js';
+import Game          from './game/Game.js';
 import SceneManager  from './graphics/SceneManager.js';
+import { loadGameModels } from './graphics/ModelLoader.js';
 
-// ── Boot ─────────────────────────────────────────────────────────────────────
-const sceneManager = new SceneManager();
-const game         = new Game(sceneManager);
+// ── Boot (async: load GLBs before gameplay) ─────────────────────────────────
+async function boot() {
+  const sceneManager = new SceneManager();
 
-// ── Game Loop ─────────────────────────────────────────────────────────────────
-let lastTime = 0;
+  let models = null;
+  try {
+    models = await loadGameModels();
+  } catch (err) {
+    console.warn('Cyber Runner: GLTF load failed — using fallback meshes.', err);
+  }
 
-function gameLoop(timestamp) {
-  const deltaTime = Math.min(timestamp - lastTime, 50); // cap at 50ms to avoid spiral of death
-  lastTime = timestamp;
+  const game = new Game(sceneManager, models);
 
-  game.update(deltaTime);
-  sceneManager.render(deltaTime);
+  let lastTime = 0;
+
+  function gameLoop(timestamp) {
+    const deltaTime = Math.min(timestamp - lastTime, 50);
+    lastTime = timestamp;
+
+    game.update(deltaTime);
+    sceneManager.render(deltaTime);
+
+    requestAnimationFrame(gameLoop);
+  }
 
   requestAnimationFrame(gameLoop);
 }
 
-requestAnimationFrame(gameLoop);
+boot();

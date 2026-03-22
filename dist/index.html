@@ -9,9 +9,9 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@400;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
 
   <!-- IMPORT MAP: This allows bare imports like "import * as THREE from 'three'" to work directly in the browser (e.g. VS Code Live Server) without needing Vite/Webpack -->
+
   <script type="importmap">
     {
       "imports": {
@@ -20,6 +20,8 @@
       }
     }
   </script>
+  <script type="module" crossorigin src="/assets/index-Cd8OI-vG.js"></script>
+  <link rel="stylesheet" crossorigin href="/assets/index-BOGPH9GZ.css">
 </head>
 
 <body>
@@ -45,18 +47,8 @@
     </div>
 
     <!-- Magnet indicator -->
-    <div id="magnetIndicator" class="powerup-indicator hidden">
+    <div id="magnetIndicator" class="hidden">
       <span>⚡ MAGNET ACTIVE</span>
-    </div>
-
-    <!-- Shield indicator -->
-    <div id="shieldIndicator" class="powerup-indicator shield-indicator hidden">
-      <span>🛡 SHIELD ACTIVE</span>
-    </div>
-
-    <!-- Dash indicator -->
-    <div id="dashIndicator" class="powerup-indicator dash-indicator hidden">
-      <span>⚡ DASH BOOST</span>
     </div>
 
     <!-- START SCREEN -->
@@ -100,7 +92,6 @@
 
   </div>
 
-  <script type="module" src="./main.js"></script>
 
 </body>
 </html>

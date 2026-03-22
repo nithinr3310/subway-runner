@@ -10,37 +10,22 @@ function makeGridTexture() {
   const canvas = document.createElement('canvas');
   canvas.width  = size;
   canvas.height = size;
-  const c = canvas.getContext('2d');
+  const ctx = canvas.getContext('2d');
 
   // Dark base
-  c.fillStyle = '#03001a';
-  c.fillRect(0, 0, size, size);
+  ctx.fillStyle = '#050010'; // Deep dark purple base
+  ctx.fillRect(0, 0, size, size);
 
-  // Grid lines — cyan, faint
-  c.strokeStyle = 'rgba(0,255,255,0.25)';
-  c.lineWidth = 1;
+  // Cyan lane dividers
+  ctx.fillStyle = '#00ffff';
+  const cW = 4;
+  ctx.fillRect(size * 0.33 - cW / 2, 0, cW, size); // Left divider
+  ctx.fillRect(size * 0.66 - cW / 2, 0, cW, size); // Right divider
 
-  const step = size / 8;
-  for (let i = 0; i <= size; i += step) {
-    c.beginPath();
-    c.moveTo(i, 0);
-    c.lineTo(i, size);
-    c.stroke();
-
-    c.beginPath();
-    c.moveTo(0, i);
-    c.lineTo(size, i);
-    c.stroke();
-  }
-
-  // Brighter horizontal lines for depth
-  c.strokeStyle = 'rgba(0,255,255,0.55)';
-  c.lineWidth   = 2;
-  for (let i = 0; i <= size; i += step) {
-    c.beginPath();
-    c.moveTo(0, i);
-    c.lineTo(size, i);
-    c.stroke();
+  // Magenta horizontal speed lines
+  ctx.fillStyle = '#ff0066';
+  for (let i = 0; i < size; i += (size / 12)) {
+    ctx.fillRect(0, i, size, 2);
   }
 
   const tex = new THREE.CanvasTexture(canvas);
@@ -56,13 +41,12 @@ export default class Track {
 
     const gridTex = makeGridTexture();
 
-    const floorMat = new THREE.MeshStandardMaterial({
+    this.trackMaterial = new THREE.MeshStandardMaterial({
       map: gridTex,
-      roughness: 0.8,
-      metalness: 0.1,
-      emissiveMap: gridTex,
-      emissive: new THREE.Color(0x001133),
-      emissiveIntensity: 0.4,
+      roughness: 0.1,   // Highly glossy
+      metalness: 0.6,   // Reflective
+      emissive: new THREE.Color(0x050010),
+      emissiveIntensity: 0.2
     });
 
     const floorGeo = new THREE.PlaneGeometry(TRACK_WIDTH, TILE_LENGTH);
@@ -70,9 +54,10 @@ export default class Track {
     // Two tiles that leap-frog to create an infinite-scroll illusion
     this._tiles = [];
     for (let i = 0; i < 2; i++) {
-      const mesh = new THREE.Mesh(floorGeo, floorMat);
+      const mesh = new THREE.Mesh(floorGeo, this.trackMaterial);
       mesh.rotation.x = -Math.PI / 2;
       mesh.position.set(0, -0.01, -TILE_LENGTH / 2 - TILE_LENGTH * i);
+      mesh.receiveShadow = true;
       scene.add(mesh);
       this._tiles.push(mesh);
     }

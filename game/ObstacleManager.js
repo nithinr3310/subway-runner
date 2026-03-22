@@ -4,9 +4,11 @@
  * Each obstacle:
  *   { id, laneIndex (0/1/2), z (world Z), width, height, isSlide }
  *
- * Obstacles spawn at z = -50 and travel toward +Z (camera) at game speed.
- * Removed when they pass z = +6 (behind camera).
+ * Obstacles spawn ahead on −Z and travel toward +Z at game speed.
+ * Removed when they pass the camera.
  */
+import { OBSTACLE_SPAWN_Z, DESPAWN_Z, SCROLL_FACTOR } from './WorldConfig.js';
+
 let _nextId = 0;
 
 export default class ObstacleManager {
@@ -39,7 +41,7 @@ export default class ObstacleManager {
         this.obstacles.push({
           id:        _nextId++,
           laneIndex: lane,
-          z:         -52,
+          z:         OBSTACLE_SPAWN_Z,
           width:     1.1,
           height:    isSlide ? 0.6 : 1.4,
           isSlide,
@@ -59,14 +61,13 @@ export default class ObstacleManager {
       this.spawnTimer = 0;
     }
 
-    const speed = this.game.speed * 0.1; // convert to world units/frame
+    const speed = this.game.speed * SCROLL_FACTOR;
 
     for (const obs of this.obstacles) {
       obs.z += speed;
     }
 
-    // Remove obstacles that have passed the camera
-    this.obstacles = this.obstacles.filter(obs => obs.z < 6);
+    this.obstacles = this.obstacles.filter(obs => obs.z < DESPAWN_Z);
   }
 
 }
